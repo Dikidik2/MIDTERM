@@ -1,18 +1,3 @@
-"""Campus Service Queue Manager (standard library only).
-
-Menu:  python campus_queue_manager.py        Demo: --demo        Tests: --test
-
-Data structure: each ticket is a dict {number, purpose, type, status} kept in ONE list in creation
-  order. A dict reads clearly (ticket["status"]) and is easy to print and test; a plain list would
-  need magic indexes. Counters are a list of two slots (None = free). Extra status "serving" =
-  called to a counter but not yet completed.
-Fairness: next_ticket() returns an INDEX into the waiting list, or None if nobody waits. Oldest
-  priority goes first, but after 2 priority in a row the oldest regular goes and the streak resets.
-  If only one type waits, serve it.
-Iterator: LIVE (not a snapshot). It skips tickets no longer waiting; StopIteration ends it.
-Estimate: simulates future calls on a COPY of the queue. Result = calls before this ticket
-  (1 = next). It counts calls, not time: with both counters busy nobody is called until one frees.
-"""
 import sys
 import unittest
 
@@ -20,8 +5,6 @@ WAITING, SERVING, SERVED, CANCELLED = "waiting", "serving", "served", "cancelled
 REGULAR, PRIORITY = "regular", "priority"
 PURPOSES = ("Enrollment", "Records", "Payment")
 
-
-# ================= QUEUE LOGIC (no print, no input) =================
 def clean(purpose, service_type=REGULAR):
     """Validate and normalise one request; raise ValueError if invalid."""
     p = str(purpose).strip().title()
@@ -75,12 +58,12 @@ class QueueManager:
     def __init__(self):
         self.tickets = []
         self.history = []
-        self.counters = [None] * 2          # range-style init: None = free
+        self.counters = [None] * 2       
         self.next_number = 1
         self.streak = 0
 
     def issue_ticket(self, purpose, service_type="regular"):
-        p, t = clean(purpose, service_type)  # validate first: no partial ticket
+        p, t = clean(purpose, service_type)  
         number = self.next_number
         self.next_number += 1
         self.tickets.append({"number": number, "purpose": p, "type": t, "status": WAITING})
