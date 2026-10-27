@@ -1,6 +1,3 @@
-"""PLNG - MIDTERM - Practice #1 (Programs 1-6). Run: python plng_midterm_practice1.py"""
-
-
 def read_float(prompt):
     while True:
         try:
